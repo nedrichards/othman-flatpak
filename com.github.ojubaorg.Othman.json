@@ -11,7 +11,6 @@
             "--share=ipc", "--socket=x11",
             "--device=dri",
             "--socket=wayland",
-            "--filesystem=home",            
             "--share=network"
     ],
     "modules": [
@@ -82,22 +81,57 @@
       ]
     },
     {
+        "name": "pycairo",
+        "build-options" : {
+            "env": {
+                "PYTHON": "/usr/bin/python"
+            }
+        },
+        "buildsystem": "simple",
+        "build-commands": [
+            "python ./setup.py build",
+            "python ./setup.py install --prefix=/app"
+        ],
+        "sources": [
+            {
+                "type": "archive",
+                "url": "https://github.com/pygobject/pycairo/releases/download/v1.12.0/pycairo-1.12.0.tar.gz",
+                "sha256": "243c351d7abcef41ac1fa984d2c753f3d065336a0fcf4c20fafb191b23423095"
+            }
+        ]
+    },
+    {
+        "name": "pygobject",
+        "build-options" : {
+                "env": {
+                    "PYTHON": "/usr/bin/python"
+                }
+        },
+        "sources": [
+            {
+                "type": "archive",
+                "url": "http://ftp.acc.umu.se/pub/GNOME/sources/pygobject/3.24/pygobject-3.24.1.tar.xz",
+                "sha256": "a628a95aa0909e13fb08230b1b98fc48adef10b220932f76d62f6821b3fdbffd"
+        }
+        ]
+    },
+    {
         "name": "othman",
         "buildsystem": "simple",
         "build-options" : {
                 "env": {
-                    "PYTHON": "/usr/bin/python3"
+                    "PYTHON": "/usr/bin/python"
                 }
         },
         "sources": [
             {
                 "type": "git",
                 "url": "https://github.com/ojuba-org/othman.git",
-                "commit": "10eecd353718be1e97d1ac7261ecdfe9bcc27a38"
+                "commit": "4296155d967a40726fc7177ac6f6156cc6284036"
         },
         {
                 "type": "patch",
-                "path": "othman-python3.patch"
+                "path": "othman-flatpak-path.patch"
         },
         {
                 "type": "file",
@@ -106,6 +140,10 @@
         ],
         "build-commands": [
                 "make PREFIX=/app install"
+        ],
+            "post-install": [
+                "mkdir -p /app/share/appdata",
+                "cp com.github.ojubaorg.Othman.appdata.xml /app/share/appdata"
         ]
     }
     ]
