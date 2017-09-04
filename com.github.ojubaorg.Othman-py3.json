@@ -1,0 +1,112 @@
+{
+    "id": "com.github.ojubaorg.Othman",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.24",
+    "sdk": "org.gnome.Sdk",
+    "command": "othman-browser",
+    "rename-icon": "Othman",
+    "copy-icon": true,
+    "rename-desktop-file": "Othman.desktop",
+    "finish-args": [
+            "--share=ipc", "--socket=x11",
+            "--device=dri",
+            "--socket=wayland",
+            "--filesystem=home",            
+            "--share=network"
+    ],
+    "modules": [
+    {
+        "name": "amiri-quran-fonts",
+        "buildsystem":"simple",
+        "sources": [
+            {
+                "type": "archive",
+                "url": "https://github.com/alif-type/amiri/archive/0.109.tar.gz",
+                "sha256": "bbfd6edbcad28607903322bd5d1feb61d0d8202191e6f1a6d7d357c831612ed4"
+            },
+            {
+                "type": "file",
+                "path": "amiri-fontconfig.conf"
+            },
+            {
+                "type": "file",
+                "path": "amiri-quran-fontconfig.conf"
+            }
+        ],
+        "build-commands": [
+            "mkdir -p /app/share/fonts/",
+            "cp *.ttf /app/share/fonts/",
+            "mkdir -p /app/etc/fonts/conf.d/",
+            "cp amiri-fontconfig.conf /app/etc/fonts/conf.d/",
+            "cp amiri-quran-fontconfig.conf /app/etc/fonts/conf.d/",
+            "fc-cache -fs"
+        ]
+    },
+    {
+      "name": "imagemagick",
+      "config-opts": [
+        "--enable-static=no",
+        "--disable-docs",
+        "--disable-deprecated",
+        "--without-autotrace",
+        "--without-bzlib",
+        "--without-djvu",
+        "--without-dps",
+        "--without-fftw",
+        "--without-fontconfig",
+        "--without-fpx",
+        "--without-freetype",
+        "--without-gvc",
+        "--without-jbig",
+        "--without-jpeg",
+        "--without-lcms",
+        "--without-lzma",
+        "--without-magick-plus-plus",
+        "--without-openexr",
+        "--without-openjp2",
+        "--without-pango",
+        "--without-raqm",
+        "--without-tiff",
+        "--without-webp",
+        "--without-wmf",
+        "--without-x",
+        "--without-xml",
+        "--without-zlib"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://www.imagemagick.org/download/ImageMagick-7.0.6-7.tar.xz",
+          "sha256": "732332a76cb62f067d680a90d85dd05a2f2592e0017af83becb639d05681106d"
+        }
+      ]
+    },
+    {
+        "name": "othman",
+        "buildsystem": "simple",
+        "build-options" : {
+                "env": {
+                    "PYTHON": "/usr/bin/python3"
+                }
+        },
+        "sources": [
+            {
+                "type": "git",
+                "url": "https://github.com/ojuba-org/othman.git",
+                "commit": "10eecd353718be1e97d1ac7261ecdfe9bcc27a38"
+        },
+        {
+                "type": "patch",
+                "path": "othman-python3.patch"
+        },
+        {
+                "type": "file",
+                "path": "com.github.ojubaorg.Othman.appdata.xml"
+        }
+        ],
+        "build-commands": [
+                "make PREFIX=/app install"
+        ]
+    }
+    ]
+}
